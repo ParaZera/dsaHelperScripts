@@ -83,22 +83,6 @@ def main():
     rename_input_file(html_file)
     save_modified_file(html_file, soup)
 
-    if len(sys.argv) < 2:
-        print("Please provide the HTML file as an argument.")
-        sys.exit(1)
-
-    html_file = sys.argv[1]
-
-    with open(html_file, "r") as file:
-        html_content = file.read()
-
-    soup = BeautifulSoup(html_content, "html.parser")
-
-    skill_values = extract_skill_values(soup)
-    apply_modification(skill_values, soup)
-    rename_input_file(html_file)
-    save_modified_file(html_file, soup)
-
 
 if __name__ == "__main__":
     main()
