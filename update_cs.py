@@ -56,6 +56,40 @@ def apply_modification(skill_values: dict[str, str], soup):
                     modified_cell: str = modify_cell_content(skill_values, col)
                     col.string = modified_cell
 
+    table = soup.find("table", class_="talente")
+    meta_talents_table = soup.new_tag("table", class_="talente")
+    table.insert_after(meta_talents_table)
+
+    th1 = soup.new_tag("th", class_="titel", colspan="2")
+    th1.append("Meta-Talente")
+
+    tr1 = soup.new_tag("tr")
+    tr1.append(th1)
+
+    div_links_innen = soup.new_tag("div", class_="links_innen")
+    td_links = soup.new_tag("td", class_="links")
+    td_links.append(div_links_innen)
+
+    div_rechts_innen = soup.new_tag("div", class_="rechts_innen")
+    td_rechts = soup.new_tag("td", class_="rechts")
+    td_rechts.append(div_rechts_innen)
+
+    tr2 = soup.new_tag("tr")
+    tr2.append(td_links)
+    tr2.append(td_rechts)
+
+    tbody = soup.new_tag("tbody")
+    tbody.append(tr1)
+
+    meta_talents_table.append(tbody)
+
+    # tbody = soup.new_tag("tbody")
+    # tr1 = tbody.append("tr")
+    # tr1.append("td").append("th", class_="titel", colspan="2").append("Meta-Talente")
+
+    # tr1 = tbody.append("tr")
+    # tr1.append("td").append("th", class_="titel", colspan="2").append("Meta-Talente")
+
 
 def rename_input_file(input_file: str):
     os.rename(input_file, f"{input_file}.bak_{datetime.now().isoformat()}")
