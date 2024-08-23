@@ -1,10 +1,79 @@
 #!/bin/env python3
 
 import os
-import sys
 from bs4 import BeautifulSoup, ResultSet, Tag
 from datetime import datetime
 import argparse
+
+
+class MetaTalent:
+    def name(self) -> str:
+        return "I AM NAME"
+
+    def probe(self) -> str:
+        return "I AM PROBE"
+
+    def taw(self) -> str:
+        return "TAW"
+
+
+class TalentSoup:
+    soup = None
+
+    def __init__(self, soup: BeautifulSoup):
+        self.soup = soup
+
+    def generate_meta_talent_table_headline(self, headline: str):
+        th_name = self.soup.new_tag("th", attrs={"class": "name", "colspan": "2"})
+        th_name.append(headline)
+
+        th_taw = self.soup.new_tag("th", attrs={"class": "taw"})
+        th_taw.append("TAW")
+
+        tr_head = self.soup.new_tag("tr")
+        tr_head.append(th_name)
+        tr_head.append(th_taw)
+
+        return tr_head
+
+    def generate_table_entry(self, name: str, probe: str, taw: str):
+        td_name = self.soup.new_tag("td", attrs={"class": "name"})
+        td_name.append(name)
+
+        td_probe = self.soup.new_tag("td", attrs={"class": "probe"})
+        td_probe.append(probe)
+
+        td_taw = self.soup.new_tag("td", attrs={"class": "taw"})
+        td_taw.append(taw)
+
+        tr = self.soup.new_tag("tr")
+        tr.append(td_name)
+        tr.append(td_probe)
+        tr.append(td_taw)
+
+        return tr
+
+    def generate_column(self, headline: str, column: str, talents: list[MetaTalent]):
+        tbody = self.soup.new_tag("tbody")
+
+        tr_head = self.generate_meta_talent_table_headline(headline)
+        tbody.append(tr_head)
+
+        for talent in talents:
+            tr = self.generate_table_entry(talent.name(), talent.probe(), talent.taw())
+            tbody.append(tr)
+
+        table = self.soup.new_tag("table", attrs={"class": "talentgruppe gitternetz"})
+        table.append(tbody)
+
+        div = self.soup.new_tag("div", attrs={"class": f"{column}_innen"})
+        div.append(table)
+
+        td = self.soup.new_tag("td", attrs={"class": column})
+        td.append(div)
+
+        return td
+
 
 shorthand_map: dict[str, str] = {
     "MU": "Mut",
@@ -110,11 +179,6 @@ def generate_left_row(soup):
 
     return td_links
 
-    # tr_upper = soup.new_tag("tr")
-    # tr_upper.append(td_links)
-
-    # return tr_upper
-
 
 def generate_right_row(soup):
     th_name = soup.new_tag("th", attrs={"class": "name", "colspan": "2"})
@@ -170,11 +234,6 @@ def generate_right_row(soup):
     td_links.append(div)
 
     return td_links
-
-    # tr_upper = soup.new_tag("tr")
-    # tr_upper.append(td_links)
-
-    # return tr_upper
 
 
 def apply_modification(skill_values: dict[str, str], soup):
