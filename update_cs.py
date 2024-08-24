@@ -5,25 +5,82 @@ from bs4 import BeautifulSoup, ResultSet, Tag
 from datetime import datetime
 import argparse
 
+shorthand_map: dict[str, str] = {
+    "MU": "Mut",
+    "KL": "Klugheit",
+    "IN": "Intuition",
+    "CH": "Charisma",
+    "FF": "Fingerfertigkeit",
+    "GE": "Gewandtheit",
+    "KO": "Konstitution",
+    "KK": "Körperkraft",
+    "GS": "Geschwindigkeit",
+}
+
+reversed_shorthand_map = {v: k for k, v in shorthand_map.items()}
+
+
+class SkillValues:
+    _data_map: dict[str, int] = None
+
+    def __init__(self, soup: BeautifulSoup):
+        skill_table = soup.find("table", class_="eigenschaften gitternetz")
+        if skill_table == None:
+            raise Exception("Table with class 'eigenschaften gitternetz' not found.")
+
+        data_map = {}
+        rows = skill_table.find_all("tr")
+        for row in rows:
+            cols = row.find_all("td")
+            cols = [ele.text.strip() for ele in cols]
+            if len(cols) >= 4:
+                key = cols[0]
+                value = cols[3]
+
+                data_map[key] = value
+                data_map[reversed_shorthand_map[key]] = value
+
+        self._data_map = data_map
+
+    def __getitem__(self, key: str) -> int:
+        return self._data_map[key]
+
 
 class MetaTalent:
     _name: str = None
-    _probe: str = None
-    _taw: str = None
+    _skill_values: SkillValues = None
+    _skills: list[str] = None
 
-    def __init__(self, name: str, probe: str, taw: str):
+    def __init__(self, name: str, skill_values: SkillValues, used_skills: list[str]):
         self._name = name
-        self._probe = probe
-        self._taw = taw
+        self._skill_values = skill_values
+        self._skills = used_skills
 
     def name(self) -> str:
         return self._name
 
     def probe(self) -> str:
-        return self._probe
+
+        short_skills = [
+            reversed_shorthand_map[skill] if len(skill) > 2 else skill
+            for skill in self._skills
+        ]
+
+        short_skills = sorted(short_skills)
+        skill_values = [self._skill_values[skill] for skill in short_skills]
+        zipped = zip(short_skills, skill_values)
+
+        strings = [f"{skill}[{value}]" for (skill, value) in zipped]
+        probe = "+".join(strings)
+
+        return probe
 
     def taw(self) -> str:
-        return self._taw
+        values = [self._skill_values[skill] for skill in self._skills]
+        sum = sum(values)
+        quotient = sum // len(values)
+
+        return quotient
 
 
 class TalentSoup:
@@ -93,47 +150,6 @@ class TalentSoup:
         td.append(div)
 
         return td
-
-
-shorthand_map: dict[str, str] = {
-    "MU": "Mut",
-    "KL": "Klugheit",
-    "IN": "Intuition",
-    "CH": "Charisma",
-    "FF": "Fingerfertigkeit",
-    "GE": "Gewandtheit",
-    "KO": "Konstitution",
-    "KK": "Körperkraft",
-    "GS": "Geschwindigkeit",
-}
-
-reversed_shorthand_map = {v: k for k, v in shorthand_map.items()}
-
-
-class SkillValues:
-    _data_map: dict[str, int] = None
-
-    def __init__(self, soup: BeautifulSoup):
-        skill_table = soup.find("table", class_="eigenschaften gitternetz")
-        if skill_table == None:
-            raise Exception("Table with class 'eigenschaften gitternetz' not found.")
-
-        data_map = {}
-        rows = skill_table.find_all("tr")
-        for row in rows:
-            cols = row.find_all("td")
-            cols = [ele.text.strip() for ele in cols]
-            if len(cols) >= 4:
-                key = cols[0]
-                value = cols[3]
-
-                data_map[key] = value
-                data_map[reversed_shorthand_map[key]] = value
-
-        self._data_map = data_map
-
-    def __getitem__(self, key: str) -> int:
-        return self._data_map[key]
 
 
 def extract_skill_values(soup):
