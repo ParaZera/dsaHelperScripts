@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import pytest
 from importlib.resources import files
-from update_dsa_sheet import DsaSoup
+from update_dsa_sheet.dsa_soup import DsaSoup
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
 
 
