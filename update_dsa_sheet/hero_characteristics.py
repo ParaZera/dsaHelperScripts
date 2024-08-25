@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+
+
 _shorthand_map = {
     "charisma": "ch",
     "fingerfertigkeit": "ff",
@@ -12,7 +15,9 @@ _shorthand_map = {
 _longhand_map = {v: k for k, v in _shorthand_map.items()}
 
 
+@dataclass
 class HeroCharacteristics:
+    # pylint: disable=too-many-instance-attributes
     _ch: int = None
     _ff: int = None
     _ge: int = None
@@ -23,29 +28,29 @@ class HeroCharacteristics:
     _mu: int = None
 
     def __init__(self, characteristics: dict[str, int]):
-        dict = {
+        dic = {
             k: v
             for k, v in characteristics.items()
-            if k.lower() in _shorthand_map.keys() or k.lower() in _longhand_map.keys()
+            if k.lower() in _shorthand_map or k.lower() in _longhand_map.keys()
         }
 
-        dict = {
+        dic = {
             (
                 k.lower()
                 if k.lower() in _shorthand_map.values()
                 else _shorthand_map[k.lower()]
             ): v
-            for k, v in dict.items()
+            for k, v in dic.items()
         }
 
-        self._ch = dict.get("ch")
-        self._ff = dict.get("ff")
-        self._ge = dict.get("ge")
-        self._in = dict.get("in")
-        self._kl = dict.get("kl")
-        self._ko = dict.get("ko")
-        self._kk = dict.get("kk")
-        self._mu = dict.get("mu")
+        self._ch = dic.get("ch")
+        self._ff = dic.get("ff")
+        self._ge = dic.get("ge")
+        self._in = dic.get("in")
+        self._kl = dic.get("kl")
+        self._ko = dic.get("ko")
+        self._kk = dic.get("kk")
+        self._mu = dic.get("mu")
 
     def __getitem__(self, key: str) -> int:
         k = (

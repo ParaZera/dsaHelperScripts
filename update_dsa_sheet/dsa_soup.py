@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
 
 
@@ -11,7 +10,7 @@ class DsaSoup:
 
     @classmethod
     def from_file(cls, character_sheet_file: str):
-        with open(character_sheet_file, "r") as file:
+        with open(character_sheet_file, "r", encoding="utf8") as file:
             html_content = file.read()
         soup = BeautifulSoup(html_content, "html.parser")
 
@@ -23,7 +22,7 @@ class DsaSoup:
 
     def characteristics(self) -> HeroCharacteristics:
         skill_table = self._soup.find("table", class_="eigenschaften gitternetz")
-        if skill_table == None:
+        if skill_table is None:
             raise Exception("Table with class 'eigenschaften gitternetz' not found.")
 
         data_map: dict[str, str] = {}
