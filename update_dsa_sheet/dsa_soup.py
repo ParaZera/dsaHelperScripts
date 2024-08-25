@@ -1,3 +1,4 @@
+from typing import Optional
 from bs4 import BeautifulSoup
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
 
@@ -35,12 +36,7 @@ class DsaSoup:
 
         return HeroCharacteristics(data_map)
 
-        # characteristics = {}
-        # rows = self._soup.find_all("tr")
-        # for row in rows:
-        #     cols = row.find_all("td")
-        #     cols = [ele.text.strip() for ele in cols]
-        #     if len(cols) >= 2:
-        #         characteristics[cols[0]] = int(cols[1])
-
-        # return HeroCharacteristics(characteristics)
+    def annotate_talents_with_characteristics_values(
+        self, characteristics: Optional[HeroCharacteristics] = None
+    ):
+        pass
