@@ -110,9 +110,6 @@ def test_fetches_hero_characteristics(character_sheet_file_path):
         }
     )
 
-    print(f"Characteristics: {characteristics}")
-    print(f"Expected: {expected}")
-
     assert characteristics == expected
 
 

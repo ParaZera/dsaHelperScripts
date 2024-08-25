@@ -21,6 +21,9 @@ class DsaSoup:
     def soup(self) -> BeautifulSoup:
         return self._soup
 
+    def serialize(self) -> str:
+        return self._soup.prettify(formatter=None)
+
     def characteristics(self) -> HeroCharacteristics:
         skill_table = self._soup.find("table", class_="eigenschaften gitternetz")
         if skill_table is None:
