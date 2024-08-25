@@ -23,7 +23,7 @@ class DsaSoup:
     def characteristics(self) -> HeroCharacteristics:
         skill_table = self._soup.find("table", class_="eigenschaften gitternetz")
         if skill_table is None:
-            raise Exception("Table with class 'eigenschaften gitternetz' not found.")
+            raise KeyError("Table with class 'eigenschaften gitternetz' not found.")
 
         data_map: dict[str, str] = {}
         rows = skill_table.find_all("tr")
