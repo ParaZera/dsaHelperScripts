@@ -1,0 +1,7 @@
+{
+    "python.testing.pytestArgs": [
+        "update_dsa_sheet/test"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
