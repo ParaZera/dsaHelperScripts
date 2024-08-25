@@ -27,6 +27,9 @@ class HeroCharacteristics:
     _kk: int = None
     _mu: int = None
 
+    def keys(self) -> set[str]:
+        return {c.upper() for c in _longhand_map.keys()}
+
     def __init__(self, characteristics: dict[str, int]):
         dic = {
             k: v
@@ -76,6 +79,9 @@ class HeroCharacteristics:
     def __repr__(self) -> str:
         characteristics = {k: getattr(self, f"_{k}") for k in _shorthand_map.values()}
         return f"HeroCharacteristics({characteristics})"
+
+    def __str__(self) -> str:
+        return repr(self)
 
     @property
     def ch(self) -> int:

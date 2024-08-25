@@ -1,5 +1,5 @@
 from typing import Optional
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, ResultSet, Tag
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
 
 
@@ -36,7 +36,38 @@ class DsaSoup:
 
         return HeroCharacteristics(data_map)
 
+    def _modify_cell_content(
+        self, characteristics: HeroCharacteristics, cell: Tag
+    ) -> str:
+        s = cell.string
+        s = s.replace(" ", "")
+        s = s.replace("\u00A0", "")
+        for shorthand in characteristics.keys():
+            s = s.replace(
+                shorthand, f"\u00A0{shorthand}[{characteristics[shorthand]:02}]\u00A0"
+            )
+        # replace space with non-breaking space
+        # cell.string = cell.string.replace(" ", "\u00A0")
+
+        return s
+
     def annotate_talents_with_characteristics_values(
         self, characteristics: Optional[HeroCharacteristics] = None
     ):
-        pass
+        characteristics = (
+            self.characteristics() if characteristics is None else characteristics
+        )
+
+        tables: ResultSet[Tag] = self.soup.find_all(
+            "table", class_="talentgruppe gitternetz"
+        )
+        for table in tables:
+            rows: ResultSet[Tag] = table.find_all("tr")
+            for row in rows:
+                cols: ResultSet[Tag] = row.find_all("td")
+                for col in cols:
+                    if col.has_attr("class") and "probe" in col["class"]:
+                        modified_cell: str = self._modify_cell_content(
+                            characteristics, col
+                        )
+                        col.string = modified_cell

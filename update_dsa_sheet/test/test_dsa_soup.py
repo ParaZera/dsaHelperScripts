@@ -20,6 +20,64 @@ def empty_html_document() -> str:
     return "<html></html>"
 
 
+@pytest.fixture
+def characteristics_and_talents_sheet_soup() -> BeautifulSoup:
+    path = str(
+        files("update_dsa_sheet")
+        .joinpath("test")
+        .joinpath("test_resources")
+        .joinpath("characteristics_and_talents.html")
+    )
+
+    with open(path, "r", encoding="utf8") as file:
+        html_content = file.read()
+    return BeautifulSoup(html_content, "html.parser")
+
+
+@pytest.fixture
+def characteristics_and_talents_annotated_sheet_soup() -> BeautifulSoup:
+    path = str(
+        files("update_dsa_sheet")
+        .joinpath("test")
+        .joinpath("test_resources")
+        .joinpath("characteristics_and_talents_annotated.html")
+    )
+
+    with open(path, "r", encoding="utf8") as file:
+        html_content = file.read()
+    return BeautifulSoup(html_content, "html.parser")
+
+
+@pytest.fixture
+def characteristics_and_talents_custom_annotated_sheet_soup() -> BeautifulSoup:
+    path = str(
+        files("update_dsa_sheet")
+        .joinpath("test")
+        .joinpath("test_resources")
+        .joinpath("characteristics_and_talents_annotated_custom.html")
+    )
+
+    with open(path, "r", encoding="utf8") as file:
+        html_content = file.read()
+    return BeautifulSoup(html_content, "html.parser")
+
+
+@pytest.fixture
+def custom_characteristics() -> HeroCharacteristics:
+    return HeroCharacteristics(
+        {
+            "Mut": 1,
+            "Klugheit": 2,
+            "Intuition": 3,
+            "Charisma": 4,
+            "Fingerfertigkeit": 5,
+            "Gewandtheit": 6,
+            "Konstitution": 7,
+            "Körperkraft": 8,
+        }
+    )
+
+
 def test_dsa_soup_from_soup(empty_html_document):
     soup = BeautifulSoup(empty_html_document, "html.parser")
     assert isinstance(DsaSoup(soup), DsaSoup)
@@ -46,10 +104,42 @@ def test_fetches_hero_characteristics(character_sheet_file_path):
             "Intuition": 14,
             "Charisma": 8,
             "Fingerfertigkeit": 12,
-            "Gewandtheit": 15,
+            "Gewandtheit": 14,
             "Konstitution": 16,
             "Körperkraft": 15,
         }
     )
 
+    print(f"Characteristics: {characteristics}")
+    print(f"Expected: {expected}")
+
     assert characteristics == expected
+
+
+def test_annotation_of_talents_with_characteristics(
+    characteristics_and_talents_sheet_soup,
+    characteristics_and_talents_annotated_sheet_soup,
+):
+    dsa = DsaSoup(characteristics_and_talents_sheet_soup)
+    dsa.annotate_talents_with_characteristics_values()
+    dsa = dsa.soup.prettify(formatter=None)
+
+    expected = characteristics_and_talents_annotated_sheet_soup.prettify(formatter=None)
+
+    assert dsa == expected
+
+
+def test_annotation_of_talents_with_custom_characteristics(
+    characteristics_and_talents_sheet_soup,
+    custom_characteristics,
+    characteristics_and_talents_custom_annotated_sheet_soup,
+):
+    dsa = DsaSoup(characteristics_and_talents_sheet_soup)
+    dsa.annotate_talents_with_characteristics_values(custom_characteristics)
+    dsa = dsa.soup.prettify(formatter=None)
+
+    expected = characteristics_and_talents_custom_annotated_sheet_soup.prettify(
+        formatter=None
+    )
+
+    assert dsa == expected

@@ -68,10 +68,25 @@ def test_from_longhand_keys(longhand_characteristics):
     assert hero.mu == 18
 
     assert hero["ch"] == 11
-    assert hero["ff"] == 12
-    assert hero["ge"] == 13
-    assert hero["in"] == 14
+    assert hero["FF"] == 12
+    assert hero["gE"] == 13
+    assert hero["In"] == 14
     assert hero["kk"] == 15
     assert hero["kl"] == 16
     assert hero["ko"] == 17
     assert hero["mu"] == 18
+
+
+def test_characteristics_keys(shorthand_characteristics):
+    hero = HeroCharacteristics(shorthand_characteristics)
+
+    assert set(hero.keys()) == {
+        "CH",
+        "FF",
+        "GE",
+        "IN",
+        "KK",
+        "KL",
+        "KO",
+        "MU",
+    }
