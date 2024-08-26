@@ -74,3 +74,6 @@ class DsaSoup:
                             characteristics, col
                         )
                         col.string = modified_cell
+
+    def add_meta_talents(self):
+        pass
