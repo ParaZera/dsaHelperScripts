@@ -61,4 +61,16 @@ class MetaTalentGroup:
         return MetaTalentGroup(data["name"], talents)
 
     def to_dict(self) -> dict[str, Any]:
-        return {"name": self._name, "talents": self._talents}
+        talents = [t.to_dict() for t in self._talents]
+        return {"name": self._name, "talents": talents}
+
+    @classmethod
+    def from_yaml(cls, yaml_str: str):
+        y: dict[str, Any] = yaml.load(yaml_str, Loader=yaml.FullLoader)
+        y: dict[str, Any] = {k.lower(): v for k, v in y.items()}
+        talents = [MetaTalent.from_dict(t) for t in y["talents"]]
+        return MetaTalentGroup(y["name"], talents)
+
+    def to_yaml(self) -> str:
+        d = self.to_dict()
+        return yaml.dump(d)
