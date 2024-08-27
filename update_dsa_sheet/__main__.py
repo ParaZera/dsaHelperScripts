@@ -15,13 +15,13 @@ from .dsa_soup import DsaSoup
 #         file.write(soup.serialize())
 
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument(
-#     "character_sheet",
-#     action="store",
-#     type=str,
-#     help="Path to the character sheet",
-# )
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "character_sheet",
+    action="store",
+    type=str,
+    help="Path to the character sheet",
+)
 
 # parser.add_argument(
 #     "-m",
@@ -31,12 +31,12 @@ from .dsa_soup import DsaSoup
 #     help="Path to the meta-talents file",
 # )
 
-# args = parser.parse_args()
-# input_file = args.character_sheet
+args = parser.parse_args()
+input_file = args.character_sheet
 # meta_talents_file = args.meta_talents
 # add_meta_talents = meta_talents_file is not None
 
-# character_sheet = DsaSoup.from_file(input_file)
+character_sheet = DsaSoup.from_file(input_file)
 # character_sheet.annotate_talents_with_characteristics_values()
 
 # if add_meta_talents:
@@ -46,8 +46,6 @@ from .dsa_soup import DsaSoup
 # save_modified_soup(input_file, character_sheet)
 
 
-meta_talent = MetaTalent("test", ["test1", "test2"])
+talents = character_sheet.talents()
 
-print(meta_talent)
-
-print(meta_talent.to_yaml())
+print(talents)

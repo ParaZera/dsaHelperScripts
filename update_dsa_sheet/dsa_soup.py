@@ -1,6 +1,8 @@
 from typing import Optional
 from bs4 import BeautifulSoup, ResultSet, Tag
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
+from update_dsa_sheet.meta_talent_group import MetaTalentGroup
+from update_dsa_sheet.talents import Talents
 
 
 class DsaSoup:
@@ -75,5 +77,34 @@ class DsaSoup:
                         )
                         col.string = modified_cell
 
-    def add_meta_talents(self):
+    def talents(self) -> Talents:
+        tables: ResultSet[Tag] = self.soup.find_all(
+            "table", class_="talentgruppe gitternetz"
+        )
+
+        talents: dict[str, int] = {}
+
+        for table in tables:
+            rows: ResultSet[Tag] = table.find_all("tr")
+            for row in rows:
+                cols: ResultSet[Tag] = row.find_all("td")
+                name: str = None
+                taw: int = None
+
+                for col in cols:
+                    if col.has_attr("class") and "name" in col["class"]:
+                        name = col.string.strip()
+
+                    if col.has_attr("class") and "taw" in col["class"]:
+                        try:
+                            taw = int(col.string.strip())
+                        except ValueError:
+                            pass
+
+                if name is not None and taw is not None:
+                    talents[name] = taw
+
+        return Talents(talents)
+
+    def add_meta_talents(self, talent_group: MetaTalentGroup):
         pass

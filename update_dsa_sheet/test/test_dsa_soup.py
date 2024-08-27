@@ -140,3 +140,10 @@ def test_annotation_of_talents_with_custom_characteristics(
     )
 
     assert dsa == expected
+
+
+def test_talents_temp(character_sheet_file_path):
+    dsa = DsaSoup.from_file(character_sheet_file_path)
+    talents = dsa.talents()
+    print(talents)
+    assert False
