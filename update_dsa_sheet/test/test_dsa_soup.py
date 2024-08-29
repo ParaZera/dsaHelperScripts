@@ -3,6 +3,7 @@ import pytest
 from importlib.resources import files
 from update_dsa_sheet.dsa_soup import DsaSoup
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
+from update_dsa_sheet.talents import Talents
 
 
 @pytest.fixture
@@ -142,8 +143,76 @@ def test_annotation_of_talents_with_custom_characteristics(
     assert dsa == expected
 
 
-def test_talents_temp(character_sheet_file_path):
+@pytest.fixture
+def character_sheet_talents() -> Talents:
+    return Talents(
+        {
+            "dolche": 2,
+            "hiebwaffen": 6,
+            "raufen": 7,
+            "ringen": 6,
+            "säbel": 0,
+            "speere": 4,
+            "wurfmesser": 0,
+            "wurfspeere": 4,
+            "zweihandhiebwaffen": 1,
+            #
+            "athletik": 7,
+            "klettern": 3,
+            "körperbeherrschung": 5,
+            "schleichen": 4,
+            "schwimmen": 2,
+            "selbstbeherrschung": 3,
+            "sich verstecken": 2,
+            "singen": 0,
+            "sinnenschärfe": 6,
+            "tanzen": 0,
+            "zechen": 1,
+            #
+            "menschenkenntnis": 1,
+            "überreden": 1,
+            #
+            "fährtensuchen": 8,
+            "fallen stellen": 3,
+            "fischen/angeln": 2,
+            "orientierung": 5,
+            "wettervorhersage": 4,
+            "wildnisleben": 8,
+            #
+            "götter und kulte": 2,
+            "pflanzenkunde": 3,
+            "rechnen": 0,
+            "sagen und legenden": 3,
+            "tierkunde": 3,
+            #
+            "alaani": 4,
+            "garethi": 2,
+            "ologhaijan": 6,
+            "thorwalsch": 8,
+            #
+            "gjalskisch": 0,
+            #
+            "abrichten": 3,
+            "feuersteinbearbeitung": 3,
+            "gerber/kürschner": 4,
+            "heilkunde: wunden": 4,
+            "holzbearbeitung": 4,
+            "kochen": 0,
+            "lederarbeiten": 3,
+            "malen/zeichnen": 0,
+            "schneidern": 0,
+            #
+            "ritualkenntnis: durro-dûn": 3,
+        }
+    )
+
+
+def test_talents_temp(character_sheet_file_path, character_sheet_talents):
     dsa = DsaSoup.from_file(character_sheet_file_path)
     talents = dsa.talents()
     print(talents)
-    assert False
+    print("")
+    print(character_sheet_talents)
+    assert character_sheet_talents == talents
+
+    # assert False
