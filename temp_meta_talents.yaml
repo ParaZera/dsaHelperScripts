@@ -1,0 +1,16 @@
+- name: Meta Talent Group
+  talents:
+    - name: Meta Talent 1
+      talents: &id001
+        - Talent1
+        - Talent2
+    - name: Meta Talent 2
+      talents: &id002
+        - Talent3
+        - Talent4
+- name: Meta Talent Group
+  talents:
+    - name: Meta Talent 1
+      talents: *id001
+    - name: Meta Talent 2
+      talents: *id002

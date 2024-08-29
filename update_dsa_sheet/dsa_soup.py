@@ -106,5 +106,6 @@ class DsaSoup:
 
         return Talents(talents)
 
-    def add_meta_talents(self, talent_group: MetaTalentGroup):
+    def add_meta_talents(self, meta_talents: list[MetaTalentGroup]):
+        print("HELLO")
         pass
