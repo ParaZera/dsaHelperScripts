@@ -2,6 +2,8 @@ import os
 from datetime import datetime
 import argparse
 
+import yaml
+
 from .meta_talent import MetaTalent
 from .dsa_soup import DsaSoup
 
@@ -41,7 +43,7 @@ character_sheet.annotate_talents_with_characteristics_values()
 
 if add_meta_talents:
     with open(meta_talents_file, "r", encoding="utf8") as file:
-        meta_talents = file.read()
+        meta_talents = yaml.load(file.read(), Loader=yaml.FullLoader)
 
     if isinstance(meta_talents, dict):
         meta_talents = [meta_talents]
