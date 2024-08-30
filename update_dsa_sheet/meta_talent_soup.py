@@ -10,7 +10,7 @@ class MetaTalentSoup:
         self._talents = talents
 
     def to_soup(self) -> Tag:
-        root = Tag(name="table", attrs={"class": "talentgruppe-gitternetz"})
+        root = Tag(name="table", attrs={"class": "talentgruppe gitternetz"})
         tbody = Tag(name="tbody")
 
         header = Tag(name="tr")
@@ -25,16 +25,20 @@ class MetaTalentSoup:
 
         tbody.append(header)
 
-        # for talent in self._talents.talents:
-        #     tr = Tag(name="tr")
-        #     td = Tag(name="td")
-        #     td.string = talent.name
-        #     tr.append(td)
-        #     td = Tag(name="td")
-        #     for t in talent.talents:
-        #         td.string = t
-        #         tr.append(td)
-        #     tbody.append(tr)
+        for talent in self._talents.talents:
+            tr = Tag(name="tr")
+            td = Tag(name="td", attrs={"class": "name"})
+            td.string = talent._name
+            tr.append(td)
+
+            td = Tag(name="td", attrs={"class": "probe"})
+            tr.append(td)
+
+            td = Tag(name="td", attrs={"class": "taw"})
+            for t in talent._talents:
+                td.string = t
+                tr.append(td)
+            tbody.append(tr)
 
         root.append(tbody)
 

@@ -60,7 +60,8 @@ add_meta_talents = meta_talents_file is not None
 character_sheet = DsaSoup.from_file(input_file)
 character_sheet.annotate_talents_with_characteristics_values()
 
-if add_meta_talents:
+# if add_meta_talents:
+if True:
     with open(meta_talents_file, "r", encoding="utf8") as file:
         meta_talents = yaml.load(file.read(), Loader=yaml.FullLoader)
 
@@ -70,15 +71,15 @@ if add_meta_talents:
     meta_talents = [MetaTalent.from_dict(t) for t in meta_talents]
     character_sheet.add_meta_talents(meta_talents)
 
-    g = MetaTalentGroup(
-        "Meta Talent Group",
-        [
-            MetaTalent("Meta Talent 1", ["Talent1", "Talent2"]),
-            MetaTalent("Meta Talent 2", ["Talent3", "Talent4"]),
-        ],
-    )
+    # g = MetaTalentGroup(
+    #     "Meta Talent Group",
+    #     [
+    #         MetaTalent("Meta Talent 1", ["Talent1", "Talent2"]),
+    #         MetaTalent("Meta Talent 2", ["Talent3", "Talent4"]),
+    #     ],
+    # )
 
-    character_sheet.add_meta_talents([g])
+    # character_sheet.add_meta_talents([g])
 
     # s = MetaTalentSoup(g)
 
