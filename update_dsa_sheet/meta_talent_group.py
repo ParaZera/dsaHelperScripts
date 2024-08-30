@@ -40,3 +40,11 @@ class MetaTalentGroup:
     def to_yaml(self) -> str:
         d = self.to_dict()
         return yaml.dump(d)
+
+    @property
+    def talents(self) -> list[MetaTalent]:
+        return self._talents
+
+    @property
+    def name(self) -> str:
+        return self._name
