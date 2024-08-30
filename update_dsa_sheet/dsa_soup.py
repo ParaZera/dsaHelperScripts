@@ -2,6 +2,7 @@ from typing import Optional
 from bs4 import BeautifulSoup, ResultSet, Tag
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
 from update_dsa_sheet.meta_talent_group import MetaTalentGroup
+from update_dsa_sheet.meta_talent_soup import MetaTalentSoup
 from update_dsa_sheet.talents import Talents
 
 
@@ -107,5 +108,40 @@ class DsaSoup:
         return Talents(talents)
 
     def add_meta_talents(self, meta_talents: list[MetaTalentGroup]):
+        table: Tag = self.soup.find_all("table", class_="talente")[0]
+
+        s = MetaTalentSoup(meta_talents[0])
+        ss = s.to_soup()
+
+        t = Tag(name="table", attrs={"class": "talente"})
+        tbody = Tag(name="tbody")
+        t.append(tbody)
+
+        # header
+        mt = Tag(name="tr")
+        tbody.append(mt)
+
+        mh = Tag(name="th", attrs={"colspan": "2", "class": "titel"})
+        mh.string = "Meta-Talente"
+
+        mt.append(mh)
+        tbody.append(mt)
+        # header end
+
+        # links
+        ltr = Tag(name="tr")
+        ltd1 = Tag(name="td", attrs={"class": "links"})
+        ltr.append(ltd1)
+        ltdiv = Tag(name="div", attrs={"class": "links_innen"})
+
+        ltdiv.append(ss)
+
+        ltd1.append(ltdiv)
+
+        tbody.append(ltr)
+        # links ende
+
+        table.append(t)
+
         print("HELLO")
         pass

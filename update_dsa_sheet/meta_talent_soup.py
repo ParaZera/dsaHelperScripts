@@ -15,7 +15,7 @@ class MetaTalentSoup:
 
         header = Tag(name="tr")
         header_name = Tag(name="th", attrs={"class": "name", "colspan": "2"})
-        header_name.string = self._talents.name
+        header_name.string = self._talents._name
 
         header_taw = Tag(name="th", attrs={"class": "taw"})
         header_taw.string = "TaW"
