@@ -108,40 +108,28 @@ class DsaSoup:
 
         return Talents(talents)
 
+    def _header(self, headline: str) -> Tag:
+        header_name = Tag(name="th", attrs={"colspan": "2", "class": "titel"})
+        header_name.string = headline
+
+        root = Tag(name="tr")
+        root.append(header_name)
+        return root
+
+    def _table_outline(self, prefix: str, child: Tag) -> Tag:
+        div_tag = Tag(name="div", attrs={"class": f"{prefix}_innen"})
+        div_tag.append(child)
+
+        table_data_cell = Tag(name="td", attrs={"class": f"{prefix}"})
+        table_data_cell.append(div_tag)
+
+        return table_data_cell
+
+        root = Tag(name="tr")
+        root.append(table_data_cell)
+        return root
+
     def add_meta_talents(self, meta_talents: list[MetaTalentGroup]):
-        table: Tag = self.soup.find_all("table", class_="talente")[0]
-
-        # s = MetaTalentSoup(meta_talents[0])
-        # ss = s.to_soup()
-
-        t = Tag(name="table", attrs={"class": "talente"})
-        tbody = Tag(name="tbody")
-        t.append(tbody)
-
-        # header
-        mt = Tag(name="tr")
-        tbody.append(mt)
-
-        mh = Tag(name="th", attrs={"colspan": "2", "class": "titel"})
-        mh.string = "Meta-Talente"
-
-        mt.append(mh)
-        tbody.append(mt)
-        # header end
-
-        # links
-        ltr = Tag(name="tr")
-        ltd1 = Tag(name="td", attrs={"class": "links"})
-        ltr.append(ltd1)
-        ltdiv = Tag(name="div", attrs={"class": "links_innen"})
-
-        # ltdiv.append(ss)
-
-        ltd1.append(ltdiv)
-
-        tbody.append(ltr)
-        # links ende
-
         g = MetaTalentGroup(
             "Meta Talent Group",
             [
@@ -151,15 +139,51 @@ class DsaSoup:
         )
 
         s = MetaTalentSoup(g)
-        ss = s.to_soup()
-        ltdiv.append(ss)
 
-        a = t.prettify(formatter=None)
+        ########################
+
+        root_tbody = Tag(name="tbody")
+        root_tbody.append(self._header("Meta-Talente"))
+        ########################
+        left = self._table_outline("links", child=s.to_soup())
+        right = self._table_outline("rechts", child=s.to_soup())
+
+        root_tr = Tag(name="tr")
+        root_tr.append(left)
+        root_tr.append(right)
+
+        root_tbody.append(root_tr)
+
+        ###########
+
+        root_table = Tag(name="table", attrs={"class": "talente"})
+        root_table.append(root_tbody)
+
+        ############
+        root: Tag = self.soup.find_all("table", class_="talente")[0]
+        root.append(root_table)
+
+        # s = MetaTalentSoup(meta_talents[0])
+        # ss = s.to_soup()
+
+        # links
+        # ltr = Tag(name="tr")
+        # ltd1 = Tag(name="td", attrs={"class": "links"})
+        # ltr.append(ltd1)
+        # ltdiv = Tag(name="div", attrs={"class": "links_innen"})
+
+        # # ltdiv.append(ss)
+
+        # ltd1.append(ltdiv)
+
+        # links ende
+
+        # ltdiv.append(ss)
+
+        a = root_table.prettify(formatter=None)
 
         print("HELLO")
         print(a)
-
-        table.append(t)
 
         print("HELLO")
         pass
