@@ -1,7 +1,9 @@
 from typing import Any
 
+from bs4 import Tag
 import yaml
 from update_dsa_sheet.meta_talent import MetaTalent
+from update_dsa_sheet.talents import Talents
 
 
 class MetaTalentGroup:
@@ -48,3 +50,36 @@ class MetaTalentGroup:
     @property
     def name(self) -> str:
         return self._name
+
+    def _soup_header(self) -> Tag:
+        header_name = Tag(name="th", attrs={"class": "name"})
+        header_name.string = self._name
+
+        header_formula = Tag(name="th", attrs={"class": "formel"})
+        header_formula.string = "Formel"
+
+        header_taw = Tag(name="th", attrs={"class": "taw"})
+        header_taw.string = "TaW"
+
+        root = Tag(name="tr")
+        root.append(header_name)
+        root.append(header_formula)
+        root.append(header_taw)
+
+        return root
+
+    def _soup_outline(self) -> Tag:
+        table: Tag = Tag(name="table", attrs={"class": "talentgruppe gitternetz"})
+        return table
+
+    def to_soup(self, talents: Talents) -> Tag:
+        outline = self._soup_outline()
+        header = self._soup_header()
+
+        outline.append(header)
+
+        for talent in self._talents:
+            m = talent.to_soup(talents)
+            outline.append(m)
+
+        return outline

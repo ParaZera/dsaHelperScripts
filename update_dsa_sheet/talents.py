@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class Talents:
     _talents: dict[str, int]
 
@@ -15,3 +18,6 @@ class Talents:
             return False
 
         return self._talents == value._talents
+
+    def get(self, key: str, default: Optional[int] = None) -> int:
+        return self._talents.get(key.lower(), default)

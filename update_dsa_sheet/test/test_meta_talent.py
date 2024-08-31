@@ -2,6 +2,7 @@ from typing import Any
 
 import pytest
 from update_dsa_sheet.meta_talent import MetaTalent
+from update_dsa_sheet.talents import Talents
 
 
 @pytest.fixture
@@ -52,3 +53,40 @@ def test_deserialize_from_yaml(meta_talent: MetaTalent, meta_talent_yaml: str):
 def test_serialize_to_yaml(meta_talent: MetaTalent, meta_talent_yaml: str):
     actual = meta_talent.to_yaml()
     assert meta_talent_yaml.strip() == actual.strip()
+
+
+@pytest.fixture
+def talents() -> Talents:
+    return Talents(
+        {
+            "talent1": 1,
+            "talent2": 2,
+            "talent3": 3,
+            "talent4": 4,
+        }
+    )
+
+
+@pytest.fixture
+def meta_talent_simple_soup() -> str:
+    return """<tr>
+ <td class="name">
+  Meta Talent
+ </td>
+ <td class="formel">
+  (Talent1\n&nbsp;Talent2) / 2
+ </td>
+ <td class="taw">
+  1
+ </td>
+</tr>"""
+
+
+def test_simple_soup(
+    talents: Talents,
+    meta_talent: MetaTalent,
+    meta_talent_simple_soup: str,
+):
+    actual = meta_talent.to_soup(talents)
+
+    assert meta_talent_simple_soup == actual.prettify()

@@ -1,5 +1,8 @@
 from typing import Any
+from bs4 import Tag
 import yaml
+
+from update_dsa_sheet.talents import Talents
 
 
 class MetaTalent:
@@ -17,6 +20,10 @@ class MetaTalent:
         if not isinstance(other, MetaTalent):
             return False
         return self.to_dict() == other.to_dict()
+
+    @property
+    def name(self) -> str:
+        return self._name
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]):
@@ -36,3 +43,24 @@ class MetaTalent:
     def to_yaml(self) -> str:
         d = self.to_dict()
         return yaml.dump(d)
+
+    def _get_taw(self, talents: Talents) -> int:
+        taw_sum = sum([talents.get(v, default=0) for v in self._talents])
+        taw = taw_sum // len(self._talents)
+        return taw
+
+    def to_soup(self, talents: Talents) -> Tag:
+        row: Tag = Tag(name="tr")
+        name: Tag = Tag(name="td", attrs={"class": "name"})
+        name.string = self._name
+
+        formula: Tag = Tag(name="td", attrs={"class": "formel"})
+        formula.string = f"({" + ".join(self._talents)}) / {len(self._talents)}"
+        taw: Tag = Tag(name="td", attrs={"class": "taw"})
+        taw.string = str(self._get_taw(talents))
+
+        row.append(name)
+        row.append(formula)
+        row.append(taw)
+
+        return row
