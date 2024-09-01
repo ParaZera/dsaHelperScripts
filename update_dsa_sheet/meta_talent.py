@@ -45,6 +45,13 @@ class MetaTalent:
         return yaml.dump(d)
 
     def _get_taw(self, talents: Talents) -> int:
+        missing_talents = [
+            t for t in self._talents if talents.get(t, default=None) is None
+        ]
+
+        if len(missing_talents) > 0:
+            return "Fehlende Talente: " + ", ".join(missing_talents)
+
         taw_sum = sum([talents.get(v, default=0) for v in self._talents])
         taw = taw_sum // len(self._talents)
         return taw
