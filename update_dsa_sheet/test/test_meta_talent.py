@@ -51,26 +51,29 @@ class TestDictSerde:
 class TestYamlSerde:
     @pytest.fixture
     def meta_talent_yaml(self) -> str:
-        return """
-    name: Meta Talent
-    talents:
-    - Talent1
-    - Talent2
-    """
+        return """name: Meta Talent
+talents:
+- Talent1
+- Talent2
+"""
 
     def test_deserialize_from_yaml(
+        self,
         meta_talent: MetaTalent,
         meta_talent_yaml: str,
     ):
         actual = MetaTalent.from_yaml(meta_talent_yaml)
-        assert meta_talent == actual
+        expected: MetaTalent = meta_talent
+        assert expected == actual
 
     def test_serialize_to_yaml(
+        self,
         meta_talent: MetaTalent,
         meta_talent_yaml: str,
     ):
-        actual = meta_talent.to_yaml()
-        assert meta_talent_yaml.strip() == actual.strip()
+        actual = meta_talent.to_yaml().strip()
+        expected = meta_talent_yaml.strip()
+        assert expected == actual
 
 
 class TestSoup:
