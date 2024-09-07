@@ -108,10 +108,49 @@ class TestSoup:
         meta_talent: MetaTalent,
         meta_talent_simple_soup: str,
     ):
-        actual = meta_talent.to_soup(talents).prettify()
-        print("actual:")
-        print(actual)
-        print("=============")
-        print("expected:")
-        print(meta_talent_simple_soup)
-        assert meta_talent_simple_soup.strip() == actual.strip()
+        actual = meta_talent.to_soup(talents).prettify().strip()
+        expected = meta_talent_simple_soup.strip()
+        assert actual == expected
+
+    @pytest.fixture
+    def empty_meta_talent(self) -> MetaTalent:
+        return MetaTalent(
+            "Meta Talent",
+            [],
+        )
+
+    def test_empty_meta_talent_soup(
+        self,
+        talents: Talents,
+        empty_meta_talent: MetaTalent,
+    ):
+        with pytest.raises(Exception):
+            empty_meta_talent.to_soup(talents)
+
+    @pytest.fixture
+    def lacking_talents(self) -> Talents:
+        return Talents({})
+
+    @pytest.fixture
+    def lacking_meta_talent_soup(self) -> str:
+        return """<tr>
+ <td class="name">
+  Meta Talent
+ </td>
+ <td class="formel">
+  (Talent1 + Talent2) / 2
+ </td>
+ <td class="taw">
+  Fehlende Talente: Talent1, Talent2
+ </td>
+</tr>"""
+
+    def test_soup_with_missing_talent(
+        self,
+        meta_talent: MetaTalent,
+        lacking_talents: Talents,
+        lacking_meta_talent_soup: str,
+    ):
+        actual = meta_talent.to_soup(lacking_talents).prettify().strip()
+        expected = lacking_meta_talent_soup.strip()
+        assert actual == expected

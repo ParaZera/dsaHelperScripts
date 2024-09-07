@@ -57,6 +57,9 @@ class MetaTalent:
         return taw
 
     def to_soup(self, talents: Talents) -> Tag:
+        if len(self._talents) == 0:
+            raise Exception()
+            # raise RuntimeError(f"Meta Talent {self._name} has no talent values")
         row: Tag = Tag(name="tr")
         name: Tag = Tag(name="td", attrs={"class": "name"})
         name.string = self._name
