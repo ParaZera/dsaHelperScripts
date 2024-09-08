@@ -3,6 +3,7 @@ from typing import Any
 import pytest
 from update_dsa_sheet.meta_talent import MetaTalent
 from update_dsa_sheet.meta_talent_group import MetaTalentGroup
+from update_dsa_sheet.talents import Talents
 
 
 @pytest.fixture
@@ -111,6 +112,57 @@ talents:
 
 
 class TestSoup:
-    def meta_talent_group_soup(self, meta_talent1, meta_talent2) -> str:
+    @pytest.fixture
+    def talents(self) -> Talents:
+        return Talents(
+            {
+                "talent1": 1,
+                "talent2": 2,
+                "talent3": 3,
+                "talent4": 4,
+            }
+        )
+
+    @pytest.fixture
+    def meta_talent_group_soup(
+        self,
+        meta_talent1,
+        meta_talent2,
+        talents,
+    ) -> str:
+        talent1: str = meta_talent1.to_soup(talents).prettify().strip()
+        talent1: str = talent1.replace("\n", "\n  ")
+
+        talent2: str = meta_talent2.to_soup(talents).prettify().strip()
+        talent2: str = talent2.replace("\n", "\n  ")
+
         return f"""
+<table class="talentgruppe gitternetz">
+ <tbody>
+  <tr>
+   <th class="name">
+    Meta Talent Group
+   </th>
+   <th class="formel">
+    Formel
+   </th>
+   <th class="taw">
+    TaW
+   </th>
+  </tr>
+  {talent1}
+  {talent2}
+ </tbody>
+</table>
 """
+
+    def test_test(
+        self,
+        meta_talent_group_soup,
+        meta_talent_group,
+        talents,
+    ):
+        actual = meta_talent_group.to_soup(talents).prettify().strip()
+        expected = meta_talent_group_soup.strip()
+
+        assert actual == expected

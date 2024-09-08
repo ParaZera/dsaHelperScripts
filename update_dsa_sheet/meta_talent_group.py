@@ -8,14 +8,14 @@ from update_dsa_sheet.talents import Talents
 
 class MetaTalentGroup:
     _name: str = None
-    _talents: list[MetaTalent] = None
+    _meta_talents: list[MetaTalent] = None
 
     def __init__(self, name: str, talents: list[MetaTalent]):
         self._name = name
-        self._talents = talents
+        self._meta_talents = talents
 
     def __repr__(self) -> str:
-        return f"MetaTalentGroup(name: {self._name}, talents: {self._talents})"
+        return f"MetaTalentGroup(name: {self._name}, talents: {self._meta_talents})"
 
     def __eq__(self, other: Any) -> bool:
         if not isinstance(other, MetaTalentGroup):
@@ -29,7 +29,7 @@ class MetaTalentGroup:
         return MetaTalentGroup(data["name"], talents)
 
     def to_dict(self) -> dict[str, Any]:
-        talents = [t.to_dict() for t in self._talents]
+        talents = [t.to_dict() for t in self._meta_talents]
         return {"name": self._name, "talents": talents}
 
     @classmethod
@@ -45,7 +45,7 @@ class MetaTalentGroup:
 
     @property
     def talents(self) -> list[MetaTalent]:
-        return self._talents
+        return self._meta_talents
 
     @property
     def name(self) -> str:
@@ -68,18 +68,15 @@ class MetaTalentGroup:
 
         return root
 
-    def _soup_outline(self) -> Tag:
-        table: Tag = Tag(name="table", attrs={"class": "talentgruppe gitternetz"})
-        return table
-
     def to_soup(self, talents: Talents) -> Tag:
-        outline = self._soup_outline()
-        header = self._soup_header()
+        table: Tag = Tag(name="table", attrs={"class": "talentgruppe gitternetz"})
+        tbody: Tag = Tag(name="tbody")
 
-        outline.append(header)
+        table.append(tbody)
+        tbody.append(self._soup_header())
 
-        for talent in self._talents:
-            m = talent.to_soup(talents)
-            outline.append(m)
+        for meta_talent in self._meta_talents:
+            m = meta_talent.to_soup(talents)
+            tbody.append(m)
 
-        return outline
+        return table
