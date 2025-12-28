@@ -24,5 +24,11 @@ Athletik	|   ( GE[14] / KO[16] / KK[15] )    |	BEx2    |	7
 python3 -m update_dsa_sheet {CHARACTER_SHEET}
 ```
 
+or 
+
+```bash
+uv run --with-requirements requirements.txt -- python -m update_dsa_sheet
+```
+
 # ToDo
 - add table with meta-talents described in "Wege des Schwerts"
