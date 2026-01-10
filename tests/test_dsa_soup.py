@@ -9,18 +9,18 @@ from update_dsa_sheet.dsa_soup import DsaSoup
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
 
 
-@pytest.fixture
-def empty_html_document() -> str:
+@pytest.fixture(name="empty_html_document")
+def fixture_empty_html_document() -> str:
     return "<html></html>"
 
 
-@pytest.fixture
-def character_sheet_file_path(resources_dir: Path) -> str:
+@pytest.fixture(name="character_sheet_file_path")
+def fixture_character_sheet_file_path(resources_dir: Path) -> str:
     return str(resources_dir / "character_sheet.html")
 
 
-@pytest.fixture
-def custom_characteristics() -> HeroCharacteristics:
+@pytest.fixture(name="custom_characteristics")
+def fixture_custom_characteristics() -> HeroCharacteristics:
     return HeroCharacteristics(
         {
             "Mut": 1,
