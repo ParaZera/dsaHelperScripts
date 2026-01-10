@@ -3,8 +3,8 @@ import pytest
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
 
 
-@pytest.fixture
-def shorthand_characteristics():
+@pytest.fixture(name="shorthand_characteristics")
+def fixture_shorthand_characteristics():
     return {
         "cH": 1,
         "ff": 2,
@@ -18,8 +18,8 @@ def shorthand_characteristics():
     }
 
 
-@pytest.fixture
-def longhand_characteristics():
+@pytest.fixture(name="longhand_characteristics")
+def fixture_longhand_characteristics():
     return {
         "CHARISMA": 11,
         "FINgerfertigKEIT": 12,

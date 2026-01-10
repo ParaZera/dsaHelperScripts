@@ -1,5 +1,7 @@
 from typing import Optional
+
 from bs4 import BeautifulSoup, ResultSet, Tag
+
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
 
 

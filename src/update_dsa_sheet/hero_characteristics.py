@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 
-
 _shorthand_map = {
     "charisma": "ch",
     "fingerfertigkeit": "ff",
