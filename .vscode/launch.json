@@ -1,0 +1,78 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "update-dsa-sheet: CLI (file arg)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "update_dsa_sheet",
+            "args": [
+                "${file}"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "update-dsa-sheet: CLI (prompt for file)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "update_dsa_sheet",
+            "args": [
+                "${input:characterSheetPath}"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "pytest: all tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "-q"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "pytest: current test file",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "${file}",
+                "-q"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "pytest: test by name",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "${file}",
+                "-q",
+                "-k",
+                "${input:pytestK}"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ],
+    "inputs": [
+        {
+            "id": "characterSheetPath",
+            "type": "promptString",
+            "description": "Path to character_sheet.html",
+            "default": "tests/resources/character_sheet.html"
+        },
+        {
+            "id": "pytestK",
+            "type": "promptString",
+            "description": "pytest -k expression",
+            "default": ""
+        }
+    ]
+}
