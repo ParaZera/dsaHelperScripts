@@ -1,6 +1,6 @@
 # update-dsa-sheet
 
-A small CLI helper for **Das Schwarze Auge (DSA)** character sheets exported as HTML from **Helden Software**.
+A small CLI helper for **Das Schwarze Auge (DSA)** character sheets exported as HTML (e.g. from **Helden Software**).
 
 It annotates the talent table with the hero’s current characteristic values, so entries like:
 
@@ -42,14 +42,35 @@ uv run update-dsa-sheet path/to/character_sheet.html
 uv run python -m update_dsa_sheet path/to/character_sheet.html
 ```
 
+### Install as an `uv` tool (global)
+
+If you want to run `update-dsa-sheet` from anywhere (without `uv run` and without activating a virtual environment), install it as a persistent uv tool.
+
+From a local checkout:
+
+```bash
+# from the project root
+uv tool install .
+
+# if the tool bin dir is not on your PATH:
+uv tool update-shell
+```
+
+Uninstall:
+
+```bash
+uv tool uninstall update-dsa-sheet
+```
+
 ## Install and run without `uv`
 
-### Using `pip` in a virtual environment
+### Using `pip` in a virtual environment (recommended)
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 
+pip install -U pip
 pip install -e .
 ```
 
@@ -84,22 +105,6 @@ uv run pytest
 
 ```bash
 pytest
-```
-
-Generate an HTML coverage report:
-
-```bash
-uv run coverage run -m pytest
-uv run coverage html
-# then open htmlcov/index.html in a browser
-```
-
-(Without `uv`, assuming `coverage` is installed):
-
-```bash
-coverage run -m pytest
-coverage html
-# then open htmlcov/index.html in a browser
 ```
 
 ## Notes
