@@ -86,6 +86,22 @@ uv run pytest
 pytest
 ```
 
+Generate an HTML coverage report:
+
+```bash
+uv run coverage run -m pytest
+uv run coverage html
+# then open htmlcov/index.html in a browser
+```
+
+(Without `uv`, assuming `coverage` is installed):
+
+```bash
+coverage run -m pytest
+coverage html
+# then open htmlcov/index.html in a browser
+```
+
 ## Notes
 
 - Input file is changed in-place; the backup file is created automatically.
