@@ -1,4 +1,5 @@
 import pytest
+
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
 
 
