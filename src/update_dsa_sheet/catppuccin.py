@@ -116,3 +116,10 @@ CATPPUCCIN_THEMES: dict[str, dict[str, str]] = {
 }
 
 VALID_THEMES = list(CATPPUCCIN_THEMES.keys())
+
+ACCENT_COLORS = [
+    "rosewater", "flamingo", "pink", "mauve", "red", "maroon",
+    "peach", "yellow", "green", "teal", "sky", "sapphire", "blue", "lavender",
+]
+
+DEFAULT_ACCENT = "mauve"

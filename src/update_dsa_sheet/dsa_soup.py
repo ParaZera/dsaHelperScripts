@@ -2,7 +2,7 @@ from typing import Optional
 
 from bs4 import BeautifulSoup, NavigableString, ResultSet, Tag
 
-from update_dsa_sheet.catppuccin import CATPPUCCIN_THEMES
+from update_dsa_sheet.catppuccin import CATPPUCCIN_THEMES, DEFAULT_ACCENT
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
 
 
@@ -27,7 +27,7 @@ class DsaSoup:
     def serialize(self) -> str:
         return self._soup.prettify(formatter=None)
 
-    def apply_theme(self, theme_name: str) -> None:
+    def apply_theme(self, theme_name: str, accent: str = DEFAULT_ACCENT) -> None:
         colors = CATPPUCCIN_THEMES[theme_name]
         css = f"""
     /* Catppuccin {theme_name} theme */
@@ -50,7 +50,7 @@ class DsaSoup:
       border-color: {colors["surface2"]};
     }}
     .titel {{
-      background-color: {colors["mauve"]};
+      background-color: {colors[accent]};
       color: {colors["base"]};
     }}
     a {{

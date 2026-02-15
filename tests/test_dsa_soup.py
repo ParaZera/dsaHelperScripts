@@ -132,6 +132,16 @@ def test_apply_theme_works_for_all_flavors(theme_name: str):
     assert CATPPUCCIN_THEMES[theme_name]["base"] in output
 
 
+def test_apply_theme_with_custom_accent(character_sheet_file_path: str):
+    dsa = DsaSoup.from_file(character_sheet_file_path)
+    dsa.apply_theme("mocha", accent="peach")
+
+    html = dsa.serialize()
+    colors = CATPPUCCIN_THEMES["mocha"]
+    assert colors["peach"] in html
+    assert colors["mauve"] not in html
+
+
 def test_no_theme_leaves_html_unchanged(character_sheet_file_path: str):
     dsa = DsaSoup.from_file(character_sheet_file_path)
     original = dsa.serialize()

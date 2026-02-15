@@ -4,7 +4,7 @@ import argparse
 import os
 from datetime import datetime
 
-from .catppuccin import VALID_THEMES
+from .catppuccin import ACCENT_COLORS, DEFAULT_ACCENT, VALID_THEMES
 from .dsa_soup import DsaSoup
 
 
@@ -31,6 +31,13 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="Apply a Catppuccin color theme (e.g. mocha, latte, frappe, macchiato)",
     )
+    parser.add_argument(
+        "--theme-accent",
+        type=str,
+        choices=ACCENT_COLORS,
+        default=DEFAULT_ACCENT,
+        help=f"Accent color for the theme (default: {DEFAULT_ACCENT})",
+    )
     args = parser.parse_args(argv)
 
     input_file = args.character_sheet
@@ -38,7 +45,7 @@ def main(argv: list[str] | None = None) -> int:
     character_sheet.annotate_talents_with_characteristics_values()
 
     if args.theme:
-        character_sheet.apply_theme(args.theme)
+        character_sheet.apply_theme(args.theme, accent=args.theme_accent)
 
     back_up_input_file(input_file)
     save_modified_soup(input_file, character_sheet)
