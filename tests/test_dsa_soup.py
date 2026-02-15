@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 from bs4 import BeautifulSoup
 
+from update_dsa_sheet.catppuccin import CATPPUCCIN_THEMES
 from update_dsa_sheet.dsa_soup import DsaSoup
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
 
@@ -93,3 +94,47 @@ def test_annotation_of_talents_with_characteristics(
     expected = load_soup(expected_file).prettify(formatter=None)
 
     assert actual == expected
+
+
+def test_apply_theme_injects_style_block(character_sheet_file_path: str):
+    dsa = DsaSoup.from_file(character_sheet_file_path)
+    dsa.apply_theme("mocha")
+
+    html = dsa.serialize()
+    colors = CATPPUCCIN_THEMES["mocha"]
+    assert "Catppuccin mocha theme" in html
+    assert colors["base"] in html
+    assert colors["text"] in html
+    assert colors["mauve"] in html
+    assert colors["surface0"] in html
+
+
+def test_apply_theme_does_not_remove_existing_styles(character_sheet_file_path: str):
+    dsa = DsaSoup.from_file(character_sheet_file_path)
+    original_html = dsa.serialize()
+    assert "Helden Stil" in original_html
+
+    dsa.apply_theme("frappe")
+    themed_html = dsa.serialize()
+    assert "Helden Stil" in themed_html
+    assert "Catppuccin frappe theme" in themed_html
+
+
+@pytest.mark.parametrize("theme_name", ["latte", "frappe", "macchiato", "mocha"])
+def test_apply_theme_works_for_all_flavors(theme_name: str):
+    html = "<html><head></head><body></body></html>"
+    soup = BeautifulSoup(html, "html.parser")
+    dsa = DsaSoup(soup)
+    dsa.apply_theme(theme_name)
+
+    output = dsa.serialize()
+    assert f"Catppuccin {theme_name} theme" in output
+    assert CATPPUCCIN_THEMES[theme_name]["base"] in output
+
+
+def test_no_theme_leaves_html_unchanged(character_sheet_file_path: str):
+    dsa = DsaSoup.from_file(character_sheet_file_path)
+    original = dsa.serialize()
+
+    dsa2 = DsaSoup.from_file(character_sheet_file_path)
+    assert dsa2.serialize() == original
