@@ -95,6 +95,28 @@ python -m update_dsa_sheet path/to/character_sheet.html
 
 ## Development
 
+Run without installing (from the repo root):
+
+```bash
+uv run update-dsa-sheet path/to/character_sheet.html
+```
+
+With a Catppuccin theme:
+
+```bash
+uv run update-dsa-sheet path/to/character_sheet.html --theme mocha
+```
+
+With a custom accent color (default: `mauve`):
+
+```bash
+uv run update-dsa-sheet path/to/character_sheet.html --theme mocha --theme-accent peach
+```
+
+Available themes: `latte`, `frappe`, `macchiato`, `mocha`
+
+Available accents: `rosewater`, `flamingo`, `pink`, `mauve`, `red`, `maroon`, `peach`, `yellow`, `green`, `teal`, `sky`, `sapphire`, `blue`, `lavender`
+
 Run tests:
 
 ```bash
