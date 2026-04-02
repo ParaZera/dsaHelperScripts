@@ -1,7 +1,8 @@
 from typing import Optional
 
-from bs4 import BeautifulSoup, ResultSet, Tag
+from bs4 import BeautifulSoup, NavigableString, ResultSet, Tag
 
+from update_dsa_sheet.catppuccin import CATPPUCCIN_THEMES, DEFAULT_ACCENT
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
 
 
@@ -25,6 +26,46 @@ class DsaSoup:
 
     def serialize(self) -> str:
         return self._soup.prettify(formatter=None)
+
+    def apply_theme(self, theme_name: str, accent: str = DEFAULT_ACCENT) -> None:
+        colors = CATPPUCCIN_THEMES[theme_name]
+        css = f"""
+    /* Catppuccin {theme_name} theme */
+    body {{
+      background-color: {colors["base"]};
+      background-image: none;
+      color: {colors["text"]};
+    }}
+    body table {{
+      background-color: {colors["surface0"]};
+      border-color: {colors["overlay0"]};
+    }}
+    th, td {{
+      border-color: {colors["overlay0"]};
+    }}
+    table.gitternetz th {{
+      border-color: {colors["surface2"]};
+    }}
+    table.gitternetz td {{
+      border-color: {colors["surface2"]};
+    }}
+    .titel {{
+      background-color: {colors[accent]};
+      color: {colors["base"]};
+    }}
+    a {{
+      color: {colors["blue"]};
+    }}
+    """
+        head = self._soup.find("head")
+        if head is None:
+            head = Tag(name="head")
+            if self._soup.html:
+                self._soup.html.insert(0, head)
+        style_tag = Tag(name="style")
+        style_tag["type"] = "text/css"
+        style_tag.append(NavigableString(css))
+        head.append(style_tag)
 
     def characteristics(self) -> HeroCharacteristics:
         skill_table = self._soup.find("table", class_="eigenschaften gitternetz")
