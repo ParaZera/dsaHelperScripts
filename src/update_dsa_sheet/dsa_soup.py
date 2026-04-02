@@ -2,8 +2,10 @@ from typing import Optional
 
 from bs4 import BeautifulSoup, NavigableString, ResultSet, Tag
 
-from update_dsa_sheet.catppuccin import CATPPUCCIN_THEMES, DEFAULT_ACCENT
+from update_dsa_sheet.catppuccin import DEFAULT_ACCENT, generate_css
 from update_dsa_sheet.hero_characteristics import HeroCharacteristics
+
+NBSP = "\u00A0"
 
 
 class DsaSoup:
@@ -28,35 +30,10 @@ class DsaSoup:
         return self._soup.prettify(formatter=None)
 
     def apply_theme(self, theme_name: str, accent: str = DEFAULT_ACCENT) -> None:
-        colors = CATPPUCCIN_THEMES[theme_name]
-        css = f"""
-    /* Catppuccin {theme_name} theme */
-    body {{
-      background-color: {colors["base"]};
-      background-image: none;
-      color: {colors["text"]};
-    }}
-    body table {{
-      background-color: {colors["surface0"]};
-      border-color: {colors["overlay0"]};
-    }}
-    th, td {{
-      border-color: {colors["overlay0"]};
-    }}
-    table.gitternetz th {{
-      border-color: {colors["surface2"]};
-    }}
-    table.gitternetz td {{
-      border-color: {colors["surface2"]};
-    }}
-    .titel {{
-      background-color: {colors[accent]};
-      color: {colors["base"]};
-    }}
-    a {{
-      color: {colors["blue"]};
-    }}
-    """
+        css = generate_css(theme_name, accent)
+        self._inject_style(css)
+
+    def _inject_style(self, css: str) -> None:
         head = self._soup.find("head")
         if head is None:
             head = Tag(name="head")
@@ -72,30 +49,34 @@ class DsaSoup:
         if skill_table is None:
             raise KeyError("Table with class 'eigenschaften gitternetz' not found.")
 
-        data_map: dict[str, str] = {}
-        rows = skill_table.find_all("tr")
-        for row in rows:
-            cols = row.find_all("td")
-            cols = [ele.text.strip() for ele in cols]
+        data_map = self._parse_characteristics_table(skill_table)
+        return HeroCharacteristics(data_map)
+
+    @staticmethod
+    def _parse_characteristics_table(table: Tag) -> dict[str, int]:
+        data_map: dict[str, int] = {}
+        for row in table.find_all("tr"):
+            cols = [col.text.strip() for col in row.find_all("td")]
             if len(cols) >= 4:
                 data_map[cols[0]] = int(cols[3])
+        return data_map
 
-        return HeroCharacteristics(data_map)
+    @staticmethod
+    def _strip_whitespace(text: str) -> str:
+        return text.replace(" ", "").replace(NBSP, "")
+
+    @staticmethod
+    def _annotate_shorthand(text: str, characteristics: HeroCharacteristics) -> str:
+        for shorthand in characteristics.keys():
+            annotated = f"{NBSP}{shorthand}[{characteristics[shorthand]:02}]{NBSP}"
+            text = text.replace(shorthand, annotated)
+        return text
 
     def _modify_cell_content(
         self, characteristics: HeroCharacteristics, cell: Tag
     ) -> str:
-        s = cell.string
-        s = s.replace(" ", "")
-        s = s.replace("\u00A0", "")
-        for shorthand in characteristics.keys():
-            s = s.replace(
-                shorthand, f"\u00A0{shorthand}[{characteristics[shorthand]:02}]\u00A0"
-            )
-        # replace space with non-breaking space
-        # cell.string = cell.string.replace(" ", "\u00A0")
-
-        return s
+        text = self._strip_whitespace(cell.string)
+        return self._annotate_shorthand(text, characteristics)
 
     def annotate_talents_with_characteristics_values(
         self, characteristics: Optional[HeroCharacteristics] = None
@@ -104,16 +85,17 @@ class DsaSoup:
             self.characteristics() if characteristics is None else characteristics
         )
 
+        for cell in self._find_probe_cells():
+            cell.string = self._modify_cell_content(characteristics, cell)
+
+    def _find_probe_cells(self) -> list[Tag]:
+        cells = []
         tables: ResultSet[Tag] = self.soup.find_all(
             "table", class_="talentgruppe gitternetz"
         )
         for table in tables:
-            rows: ResultSet[Tag] = table.find_all("tr")
-            for row in rows:
-                cols: ResultSet[Tag] = row.find_all("td")
-                for col in cols:
+            for row in table.find_all("tr"):
+                for col in row.find_all("td"):
                     if col.has_attr("class") and "probe" in col["class"]:
-                        modified_cell: str = self._modify_cell_content(
-                            characteristics, col
-                        )
-                        col.string = modified_cell
+                        cells.append(col)
+        return cells

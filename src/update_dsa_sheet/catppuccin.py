@@ -123,3 +123,35 @@ ACCENT_COLORS = [
 ]
 
 DEFAULT_ACCENT = "mauve"
+
+
+def generate_css(theme_name: str, accent: str = DEFAULT_ACCENT) -> str:
+    colors = CATPPUCCIN_THEMES[theme_name]
+    return f"""
+    /* Catppuccin {theme_name} theme */
+    body {{
+      background-color: {colors["base"]};
+      background-image: none;
+      color: {colors["text"]};
+    }}
+    body table {{
+      background-color: {colors["surface0"]};
+      border-color: {colors["overlay0"]};
+    }}
+    th, td {{
+      border-color: {colors["overlay0"]};
+    }}
+    table.gitternetz th {{
+      border-color: {colors["surface2"]};
+    }}
+    table.gitternetz td {{
+      border-color: {colors["surface2"]};
+    }}
+    .titel {{
+      background-color: {colors[accent]};
+      color: {colors["base"]};
+    }}
+    a {{
+      color: {colors["blue"]};
+    }}
+    """
